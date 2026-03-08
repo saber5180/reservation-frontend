@@ -1,0 +1,49 @@
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  height: 56px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.topbar-brand {
+  display: flex; align-items: center; gap: .45rem;
+  font-size: 1rem; font-weight: 800; color: var(--text);
+  letter-spacing: -.02em; text-decoration: none;
+}
+.topbar-logo { font-size: 1.2rem; }
+
+.topbar-nav { display: flex; align-items: center; gap: .5rem; }
+
+.nav-link {
+  color: var(--text2); font-size: .875rem; font-weight: 500;
+  padding: .3rem .75rem; border-radius: 8px; transition: all .15s;
+}
+.nav-link:hover { background: var(--bg); color: var(--text); }
+
+.btn-logout {
+  color: var(--text2); font-size: .875rem; font-weight: 500;
+  padding: .3rem .75rem; border-radius: 8px; transition: all .15s;
+}
+.btn-logout:hover { background: var(--red-l); color: var(--red); }
+
+.nav-pro {
+  font-size: .8rem; font-weight: 600; color: var(--text2);
+  padding: .3rem .9rem; border: 1px solid var(--border2);
+  border-radius: 20px; transition: all .15s;
+}
+.nav-pro:hover { border-color: var(--primary); color: var(--primary); }
+
+.page {
+  flex: 1; padding: 2rem;
+  max-width: 1040px; margin: 0 auto; width: 100%;
+}
+
+@media (max-width: 640px) {
+  .topbar { padding: 0 1rem; }
+  .page   { padding: 1rem; }
+}

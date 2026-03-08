@@ -1,0 +1,68 @@
+.adm { display:flex; flex-direction:column; gap:1.25rem; }
+
+.adm-head h1 { font-size:1.3rem; }
+.adm-sub { font-size:.82rem; color:var(--text2); margin-top:.2rem; }
+.adm-sub span { font-weight:600; }
+
+/* Tabs */
+.adm-tabs { display:flex; gap:.35rem; background:var(--white); border:1px solid var(--border); padding:.3rem; border-radius:10px; box-shadow:var(--shadow); flex-wrap:wrap; }
+.adm-tab { flex:1; min-width:110px; padding:.55rem .75rem; border-radius:8px; font-size:.85rem; font-weight:600; color:var(--text2); background:none; transition:all .12s; display:flex; align-items:center; justify-content:center; gap:.4rem; }
+.adm-tab.active { background:var(--primary); color:white; }
+.adm-cnt { background:rgba(255,255,255,.3); color:white; border-radius:20px; padding:0 .4rem; font-size:.7rem; }
+.adm-tab:not(.active) .adm-cnt { background:var(--yellow-l); color:#92400e; }
+
+/* Filters */
+.adm-filters { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.85rem; }
+.f-btn { padding:.3rem .85rem; border-radius:20px; border:1px solid var(--border); color:var(--text2); font-size:.8rem; background:white; transition:all .12s; }
+.f-btn.active { background:var(--primary); border-color:var(--primary); color:white; }
+
+.adm-empty { text-align:center; color:var(--muted); padding:2.5rem; font-size:.9rem; }
+
+/* Reservation cards */
+.adm-card {
+  background:var(--white); border:1px solid var(--border); border-radius:var(--r);
+  padding:1rem 1.25rem; margin-bottom:.6rem; box-shadow:var(--shadow);
+}
+.adm-card-top { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin-bottom:.65rem; }
+.adm-patient { display:flex; flex-direction:column; }
+.adm-pname    { font-weight:700; font-size:.95rem; }
+.adm-pcontact { color:var(--muted); font-size:.8rem; }
+.adm-time     { color:var(--text2); font-size:.875rem; flex:1; }
+
+.adm-btns { display:flex; flex-wrap:wrap; gap:.4rem; }
+.btn-accept { padding:.4rem .9rem; background:var(--green-l); color:#065f46; font-weight:600; border-radius:8px; font-size:.85rem; }
+.btn-reject { padding:.4rem .9rem; background:var(--red-l); color:#991b1b; font-weight:600; border-radius:8px; font-size:.85rem; }
+.btn-propose-link { padding:.4rem .9rem; color:var(--primary); font-size:.82rem; font-weight:600; border:1px solid var(--primary-l); border-radius:8px; background:var(--primary-l); }
+
+.adm-propose { display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; margin-top:.35rem; width:100%; }
+.adm-propose input { padding:.4rem .65rem; border-radius:7px; border:1px solid var(--border); font-size:.82rem; flex:1; min-width:150px; }
+.btn-propose { padding:.4rem .9rem; background:var(--primary); color:white; font-weight:600; border-radius:7px; font-size:.82rem; }
+.btn-cancel  { padding:.4rem .9rem; background:var(--bg); color:var(--text2); border-radius:7px; font-size:.82rem; border:1px solid var(--border); }
+
+.adm-proposed { font-size:.82rem; color:var(--purple); margin-top:.4rem; }
+
+/* Availability */
+.adm-avail { display:flex; flex-direction:column; gap:.65rem; }
+.adm-avail-hint { font-size:.875rem; color:var(--text2); }
+
+.avail-row {
+  display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;
+  background:var(--white); padding:.75rem 1rem; border-radius:10px; border:1px solid var(--border); box-shadow:var(--shadow);
+}
+.avail-row select,
+.avail-row input[type="time"] { padding:.45rem .7rem; border-radius:8px; border:1.5px solid var(--border); background:var(--white); color:var(--text); font-size:.875rem; }
+.avail-row select:focus,
+.avail-row input:focus { outline:none; border-color:var(--primary); }
+.avail-row span { color:var(--muted); }
+.avail-del { padding:.3rem .6rem; background:var(--red-l); color:var(--red); border-radius:6px; font-size:.82rem; }
+
+.avail-footer { display:flex; gap:.75rem; }
+.btn-add { padding:.55rem 1.1rem; background:white; border:1.5px dashed var(--border2); color:var(--text2); border-radius:9px; font-size:.875rem; transition:all .12s; }
+.btn-add:hover { border-color:var(--primary); color:var(--primary); }
+.btn-save { padding:.55rem 1.4rem; background:var(--primary); color:white; font-weight:700; border-radius:9px; font-size:.875rem; }
+
+/* QR */
+.adm-qr { display:flex; flex-direction:column; align-items:center; gap:1rem; background:var(--white); border:1px solid var(--border); border-radius:var(--r); padding:2.5rem; box-shadow:var(--shadow); }
+.adm-qr img { width:220px; height:220px; border:8px solid white; border-radius:10px; box-shadow:var(--shadow-lg); }
+.adm-qr p { color:var(--text2); font-size:.875rem; }
+.btn-dl { padding:.6rem 1.4rem; background:var(--primary); color:white; font-weight:600; border-radius:9px; font-size:.875rem; }

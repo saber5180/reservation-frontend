@@ -1,0 +1,37 @@
+.al-wrap { display:flex; justify-content:center; align-items:center; min-height:70vh; }
+
+.al-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 2.5rem;
+  width: 100%; max-width: 400px; text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.al-icon { font-size: 2.5rem; margin-bottom: .65rem; }
+.al-card h1 { font-size: 1.3rem; margin-bottom: .25rem; }
+.al-card > p { color: var(--text2); font-size: .875rem; margin-bottom: 1.75rem; }
+
+.al-card form { display:flex; flex-direction:column; gap:.9rem; text-align:left; }
+
+.al-card label {
+  display:flex; flex-direction:column; gap:.3rem;
+  font-size:.75rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.05em;
+}
+
+.al-card input {
+  padding: .75rem 1rem; border-radius: 9px;
+  border: 1.5px solid var(--border); background: var(--white);
+  color: var(--text); font-size: .95rem; transition: border .15s; outline: none;
+}
+.al-card input:focus { border-color: var(--primary); }
+
+.al-card button[type="submit"] {
+  padding: .875rem; background: var(--primary); color: white;
+  font-weight: 700; font-size: .95rem; border-radius: 10px; transition: background .15s;
+  margin-top: .25rem;
+}
+.al-card button[type="submit"]:hover { background: var(--primary-d); }
+.al-card button:disabled { opacity: .6; cursor: not-allowed; }
+
+.al-err { background: var(--red-l); color: var(--red); padding:.55rem .85rem; border-radius:8px; font-size:.82rem; }
+
+.al-hint { margin-top:1rem; font-size:.75rem; color:var(--muted); }
