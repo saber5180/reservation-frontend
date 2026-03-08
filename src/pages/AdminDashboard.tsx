@@ -156,8 +156,12 @@ export default function AdminDashboard() {
         <div className="adm-qr">
           {qr
             ? <>
-                <img src={qr} alt="QR Code"/>
+                <div className="qr-wrapper">
+                  <img src={qr} alt="QR Code" className="qr-img"/>
+                  <div className="qr-icon">🩺</div>
+                </div>
                 <p>Affichez ce code dans votre cabinet.</p>
+                <p className="qr-link">{prof?.bookingLink}</p>
                 <a href={qr} download="qr-rdv.png" className="btn-dl">Télécharger</a>
               </>
             : <div className="adm-empty">Chargement...</div>
