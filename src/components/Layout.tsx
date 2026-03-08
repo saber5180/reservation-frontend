@@ -10,8 +10,8 @@ export default function Layout() {
     <div className="app">
       <header className="topbar">
         <Link to="/" className="topbar-brand">
-          <span className="topbar-logo">🩺</span>
-          <span>RésaPro</span>
+          <span className="topbar-logo">🦷</span>
+          <span>DentaRDV</span>
         </Link>
         <div className="topbar-nav">
           {user ? (

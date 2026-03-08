@@ -158,7 +158,7 @@ export default function AdminDashboard() {
             ? <>
                 <div className="qr-wrapper">
                   <img src={qr} alt="QR Code" className="qr-img"/>
-                  <div className="qr-icon">🩺</div>
+                  <div className="qr-icon">🦷</div>
                 </div>
                 <p>Affichez ce code dans votre cabinet.</p>
                 <p className="qr-link">{prof?.bookingLink}</p>

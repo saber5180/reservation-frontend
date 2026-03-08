@@ -23,8 +23,8 @@ export default function AdminLogin() {
   return (
     <div className="al-wrap">
       <div className="al-card">
-        <div className="al-icon">🩺</div>
-        <h1>Espace Médecin</h1>
+        <div className="al-icon">🦷</div>
+        <h1>Espace Dentiste</h1>
         <p>Connectez-vous pour gérer vos rendez-vous</p>
         <form onSubmit={submit}>
           {err && <div className="al-err">{err}</div>}
