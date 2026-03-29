@@ -1,4 +1,4 @@
-import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   AdminRealtimeProvider,
@@ -20,7 +20,9 @@ function navPillClass({ isActive }: { isActive: boolean }) {
 function LayoutInner() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const loc = useLocation();
   const pendingDash = useAdminPendingCount();
+  const accountLoginFullBleed = loc.pathname === '/account' && !user;
 
   return (
     <>
@@ -33,9 +35,9 @@ function LayoutInner() {
           aria-label="DentaRDV — Accueil"
         >
           <img
-            src="/dentardv-logo.png"
-            alt=""
-            className="topbar-logo-img"
+            src="/nav-bar-logo.png"
+            alt="DentaRDV"
+            className="topbar-logo-img topbar-logo-img--nav"
             width="64"
             height="40"
           />
@@ -61,6 +63,7 @@ function LayoutInner() {
                     }
                     end
                     title="Tableau de bord"
+                    aria-label="Tableau de bord"
                   >
                     <span className="nav-pill__ic" aria-hidden>
                       <IconDashboard />
@@ -76,6 +79,7 @@ function LayoutInner() {
                     to="/admin/account"
                     className={navPillClass}
                     title="Mon cabinet"
+                    aria-label="Mon cabinet"
                   >
                     <span className="nav-pill__ic" aria-hidden>
                       <IconCabinet />
@@ -87,6 +91,7 @@ function LayoutInner() {
                   type="button"
                   className="nav-pill nav-pill--logout"
                   title="Déconnexion"
+                  aria-label="Déconnexion"
                   onClick={() => {
                     logout();
                     nav('/');
@@ -101,7 +106,12 @@ function LayoutInner() {
             ) : (
               <div className="topbar-cluster">
                 <div className="topbar-segment" role="group" aria-label="Compte">
-                  <NavLink to="/account" className={navPillClass} title="Mon compte">
+                  <NavLink
+                    to="/account"
+                    className={navPillClass}
+                    title="Mon compte"
+                    aria-label="Mon compte"
+                  >
                     <span className="nav-pill__ic" aria-hidden>
                       <IconUserCircle />
                     </span>
@@ -112,6 +122,7 @@ function LayoutInner() {
                   type="button"
                   className="nav-pill nav-pill--logout"
                   title="Déconnexion"
+                  aria-label="Déconnexion"
                   onClick={() => {
                     logout();
                     nav('/');
@@ -125,13 +136,29 @@ function LayoutInner() {
               </div>
             )
           ) : (
-            <Link to="/admin" className="nav-pro">
-              Espace professionnel
-            </Link>
+            <div className="topbar-cluster">
+              <div className="topbar-segment" role="group" aria-label="Connexion patient">
+                <NavLink
+                  to="/account"
+                  className={navPillClass}
+                  title="Se connecter"
+                  aria-label="Se connecter"
+                >
+                  <span className="nav-pill__ic" aria-hidden>
+                    <IconUserCircle />
+                  </span>
+                  <span className="nav-pill__txt">Se connecter</span>
+                </NavLink>
+              </div>
+            </div>
           )}
         </nav>
       </header>
-      <main className="page">
+      <main
+        className={['page', accountLoginFullBleed ? 'page--account-login' : '']
+          .filter(Boolean)
+          .join(' ')}
+      >
         <Outlet />
       </main>
     </>

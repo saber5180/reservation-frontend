@@ -1,21 +1,21 @@
 import { io, type Socket } from 'socket.io-client';
-import { getApiBaseUrl } from './apiBaseUrl';
+import { getRealtimeOrigin } from './apiBaseUrl';
 
 /**
  * Socket.IO en production : derrière Render / nginx / CDN, le WebSocket pur échoue souvent.
  * On tente d’abord le long-polling (HTTP), puis upgrade WebSocket si possible.
  */
 export function createRealtimeSocket(token: string): Socket {
-  const API_URL = getApiBaseUrl();
+  const origin = getRealtimeOrigin();
 
   if (import.meta.env.PROD) {
-    if (API_URL.includes('localhost') || API_URL.includes('127.0.0.1')) {
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
       console.error(
         '[DentaRDV] En production, VITE_API_URL doit être l’URL HTTPS de votre API (ex. Render). ' +
           'Sur Vercel : Project Settings → Environment Variables → VITE_API_URL, puis redéployer.',
       );
     }
-    if (typeof window !== 'undefined' && window.location.protocol === 'https:' && API_URL.startsWith('http:')) {
+    if (typeof window !== 'undefined' && window.location.protocol === 'https:' && origin.startsWith('http:')) {
       console.error(
         '[DentaRDV] Le site est en HTTPS mais VITE_API_URL est en HTTP : le navigateur bloque (contenu mixte). ' +
           'Utilisez https:// pour l’API.',
@@ -23,7 +23,8 @@ export function createRealtimeSocket(token: string): Socket {
     }
   }
 
-  const socket = io(API_URL, {
+  // Première requête en long-polling (URL type …/socket.io/?EIO=4&transport=polling) : normal, puis upgrade WS si possible.
+  const socket = io(origin, {
     auth: { token },
     // Polling d’abord : passe mieux derrière proxies / hébergeurs gratuits
     transports: ['polling', 'websocket'],

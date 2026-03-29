@@ -23,7 +23,9 @@ async function request<T>(
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data.message || `Error ${res.status}`);
+    const msg = data.message;
+    const text = Array.isArray(msg) ? msg.join(' ') : msg;
+    throw new Error(text || `Error ${res.status}`);
   }
   return data as T;
 }

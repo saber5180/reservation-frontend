@@ -24,3 +24,74 @@
 .otp-dev  { background: var(--yellow-l); color: #92400e; padding: .55rem .75rem; border-radius: 8px; font-size: .82rem; border: 1px dashed #fcd34d; }
 .otp-back { color: var(--muted); font-size: .8rem; text-align: left; }
 .otp-back:hover { color: var(--primary); }
+
+/* Variante page Connexion (hero) */
+.otp--hero .otp-form {
+  gap: 0.85rem;
+}
+
+.otp-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  margin: 0;
+}
+
+.otp-hint {
+  margin: -0.15rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.otp-hint-code {
+  font-family: ui-monospace, monospace;
+  font-weight: 800;
+  font-size: 0.9em;
+  color: var(--primary-d);
+  background: var(--primary-l);
+  padding: 0.12rem 0.4rem;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+}
+
+.otp-input--phone {
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  padding: 0.95rem 1.1rem;
+  border-radius: 12px;
+  border-width: 2px;
+}
+
+.otp--hero .otp-btn {
+  min-height: 52px;
+  border-radius: 12px;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
+}
+
+.otp-sent--hero {
+  font-size: 0.82rem;
+  color: var(--text2);
+  margin: -0.25rem 0 0;
+}
+
+.otp-sent-num {
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary-d);
+}
+
+.otp--hero .otp-code {
+  font-size: 1.65rem;
+  letter-spacing: 0.45em;
+  padding: 1rem 0.75rem;
+  border-radius: 12px;
+  border-width: 2px;
+}

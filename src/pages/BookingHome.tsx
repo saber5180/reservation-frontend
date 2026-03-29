@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback, type ComponentType } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import {
@@ -9,7 +9,14 @@ import {
 } from '../lib/realtime';
 import Calendar from '../components/Calendar';
 import OtpLogin from '../components/OtpLogin';
-import { IconCalendar, IconListRdv } from '../components/TabIcons';
+import {
+  IconCalendar,
+  IconListRdv,
+  IconFilterPending,
+  IconFilterConfirmed,
+  IconFilterRejected,
+  IconFilterPatientWait,
+} from '../components/TabIcons';
 import './BookingHome.css';
 
 interface Doctor {
@@ -38,8 +45,17 @@ const BADGE: Record<string,{t:string;cls:string}> = {
   CHANGE_PROPOSED:{t:'Action requise', cls:'badge-purple'},
 };
 
+const STATUS_BADGE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  PENDING: IconFilterPending,
+  CONFIRMED: IconFilterConfirmed,
+  REJECTED: IconFilterRejected,
+  CHANGE_PROPOSED: IconFilterPatientWait,
+};
+
 export default function BookingHome() {
   const { slug }         = useParams<{slug?:string}>();
+  const location         = useLocation();
+  const navigate         = useNavigate();
   const { user, token }  = useAuth();
 
   const [doc,    setDoc]    = useState<Doctor|null>(null);
@@ -66,6 +82,16 @@ export default function BookingHome() {
     const ep = slug ? `/professionals/${slug}/booking` : '/professionals/default';
     api.get<Doctor>(ep).then(setDoc).catch(()=>setErr('Médecin introuvable.'));
   },[slug]);
+
+  useEffect(() => {
+    const st = location.state as { focusBooking?: boolean } | undefined;
+    if (!st?.focusBooking) return;
+    setTab('book');
+    navigate(location.pathname, { replace: true, state: null });
+    window.requestAnimationFrame(() => {
+      document.getElementById('booking-rdv')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [location.state, location.pathname, navigate]);
 
   useEffect(()=>{
     if (!doc||!date){setSlots([]);return;}
@@ -206,8 +232,9 @@ export default function BookingHome() {
         <div className="bk-rdvs">
           {rdvs.length===0
             ? <div className="bk-empty">Aucun rendez-vous pour le moment.</div>
-            : rdvs.map(r=>{
-                const b=BADGE[r.status]||{t:r.status,cls:''};
+            : rdvs.map((r) => {
+                const b = BADGE[r.status] || { t: r.status, cls: '' };
+                const StatusIco = STATUS_BADGE_ICONS[r.status];
                 return (
                   <div key={r.id} className="rdv-card">
                     <div className="rdv-left">
@@ -238,7 +265,18 @@ export default function BookingHome() {
                       )}
                     </div>
                     <div className="rdv-right">
-                      <span className={`badge ${b.cls}`}>{b.t}</span>
+                      <span
+                        className={`badge rdv-status-badge ${b.cls}${StatusIco ? '' : ' rdv-status-badge--fallback'}`}
+                        title={b.t}
+                        aria-label={b.t}
+                      >
+                        {StatusIco ? (
+                          <span className="rdv-status-badge__ic" aria-hidden>
+                            <StatusIco />
+                          </span>
+                        ) : null}
+                        <span className="rdv-status-badge__txt">{b.t}</span>
+                      </span>
                       {r.status==='CHANGE_PROPOSED'&&r.proposedSlotStart&&(
                         <div className="rdv-actions">
                           <button type="button" className="btn-yes" onClick={()=>respond(r.id,true)}>
@@ -259,7 +297,7 @@ export default function BookingHome() {
       ) : (
 
       /* ── BOOKING ── */
-      <div className="bk-main">
+      <div className="bk-main" id="booking-rdv">
         {/* Left — calendar */}
         <div className="bk-cal-wrap">
           <p className="bk-step-title"><span className="num">1</span> Choisir une date</p>
@@ -335,14 +373,6 @@ export default function BookingHome() {
             </div>
           )}
 
-          {/* Guest hint — bottom */}
-          {!token && !slot && (
-            <div className="bk-guest">
-              <span>Déjà client ?</span>
-              <button onClick={()=>setOtp(v=>!v)}>Se connecter</button>
-              {otp && <div className="bk-guest-otp"><OtpLogin onSuccess={()=>setOtp(false)}/></div>}
-            </div>
-          )}
         </div>
       </div>
       )}

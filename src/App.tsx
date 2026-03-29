@@ -10,7 +10,7 @@ import ProfessionalAccount from './pages/ProfessionalAccount';
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   if (isLoading) return <div className="loading">Chargement...</div>;
-  if (!user || user.role !== 'ADMIN') return <Navigate to="/admin" replace />;
+  if (!user || user.role !== 'ADMIN') return <Navigate to="/account" replace />;
   return <>{children}</>;
 }
 

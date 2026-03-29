@@ -19,7 +19,8 @@ interface Ctx {
   isLoading: boolean;
   sendOtp:   (phone: string) => Promise<string | undefined>;
   verifyOtp: (phone: string, code: string) => Promise<void>;
-  adminLogin:(email: string, password: string) => Promise<void>;
+  proSendOtp: (phone: string) => Promise<string | undefined>;
+  proVerifyOtp: (phone: string, code: string) => Promise<void>;
   updateMe:  (data: { name?: string; email?: string; phone?: string }) => Promise<void>;
   logout:    () => void;
 }
@@ -58,8 +59,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     save(r.access_token, r.user);
   };
 
-  const adminLogin = async (email: string, password: string) => {
-    const r = await api.post<{ access_token: string; user: User }>('/auth/admin/login', { email, password });
+  const proSendOtp = async (phone: string) => {
+    const r = await api.post<{ message: string; otp?: string }>('/auth/pro/send-otp', {
+      phone,
+    });
+    return r.otp;
+  };
+
+  const proVerifyOtp = async (phone: string, code: string) => {
+    const r = await api.post<{ access_token: string; user: User }>('/auth/pro/verify-otp', {
+      phone,
+      code,
+    });
     save(r.access_token, r.user);
   };
 
@@ -75,7 +86,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, sendOtp, verifyOtp, adminLogin, updateMe, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isLoading,
+        sendOtp,
+        verifyOtp,
+        proSendOtp,
+        proVerifyOtp,
+        updateMe,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

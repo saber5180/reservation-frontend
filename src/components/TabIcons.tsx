@@ -101,3 +101,48 @@ export function IconLogout({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** Filtre « tous les statuts » — liste */
+export function IconFilterAll({ className }: { className?: string }) {
+  return <IconListRdv className={className} />;
+}
+
+/** En attente (cabinet) */
+export function IconFilterPending({ className }: { className?: string }) {
+  return (
+    <svg className={className} {...common} aria-hidden>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  );
+}
+
+export function IconFilterConfirmed({ className }: { className?: string }) {
+  return (
+    <svg className={className} {...common} aria-hidden>
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <path d="M22 4L12 14.01l-3-3" />
+    </svg>
+  );
+}
+
+export function IconFilterRejected({ className }: { className?: string }) {
+  return (
+    <svg className={className} {...common} aria-hidden>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m15 9-6 6M9 9l6 6" />
+    </svg>
+  );
+}
+
+/** En attente réponse patient (contre-proposition) */
+export function IconFilterPatientWait({ className }: { className?: string }) {
+  return (
+    <svg className={className} {...common} aria-hidden>
+      <circle cx="9" cy="7" r="3" />
+      <path d="M3 19c1.5-3 4.5-4.5 6-4.5s1.5.5 2 1" />
+      <circle cx="17" cy="11" r="2.5" />
+      <path d="M17 8.5V11l1.2 1.2" />
+    </svg>
+  );
+}

@@ -1,0 +1,177 @@
+.rdv-dnav {
+  position: relative;
+  width: min(100%, 320px);
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Pilule : bordure fine, coins très arrondis */
+.rdv-dnav__pill {
+  display: flex;
+  align-items: stretch;
+  min-height: 44px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.rdv-dnav__seg {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease;
+}
+
+.rdv-dnav__seg:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.rdv-dnav__seg--chev {
+  flex: 0 0 44px;
+  background: #ededed;
+  color: #475569;
+}
+
+.rdv-dnav__seg--chev:hover {
+  background: #e2e8f0;
+}
+
+.rdv-dnav__seg--chev-right {
+  background: #fff;
+}
+
+.rdv-dnav__seg--chev-right:hover {
+  background: #f8fafc;
+}
+
+.rdv-dnav__chev {
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 300;
+  margin-top: -2px;
+}
+
+.rdv-dnav__seg--main {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 0.45rem;
+  padding: 0 0.65rem;
+  background: #fff;
+}
+
+.rdv-dnav__seg--main:hover {
+  background: #fafbfc;
+}
+
+.rdv-dnav__cal {
+  flex-shrink: 0;
+  display: flex;
+  color: #1e293b;
+}
+
+.rdv-dnav__date {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary-d, #163d73);
+  letter-spacing: 0.02em;
+}
+
+/* Liste ouverte */
+.rdv-dnav__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+  padding: 4px 0;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e8ecf1;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+  max-height: min(320px, 52vh);
+  overflow: hidden;
+}
+
+.rdv-dnav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  max-height: min(312px, 50vh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rdv-dnav__opt {
+  display: block;
+  width: calc(100% - 1rem);
+  margin: 0 auto 0.2rem;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #64748b;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.rdv-dnav__opt:hover {
+  background: #ededed;
+  color: #1e293b;
+}
+
+/* Jour sélectionné (pas aujourd’hui) */
+.rdv-dnav__opt--sel:not(.rdv-dnav__opt--today) {
+  background: #ededed;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Aujourd’hui : bandeau foncé */
+.rdv-dnav__opt--today {
+  background: var(--primary-d, #163d73);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+}
+
+.rdv-dnav__opt--today:hover {
+  background: var(--primary, #1e4e91);
+  color: #fff;
+}
+
+.rdv-dnav__opt--today.rdv-dnav__opt--sel {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 380px) {
+  .rdv-dnav {
+    width: min(100%, 100vw - 2rem);
+  }
+
+  .rdv-dnav__seg--chev {
+    flex-basis: 40px;
+  }
+
+  .rdv-dnav__date {
+    font-size: 0.88rem;
+  }
+}

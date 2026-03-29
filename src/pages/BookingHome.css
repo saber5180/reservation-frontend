@@ -327,6 +327,45 @@
 }
 .rdv-right { display:flex; flex-direction:column; align-items:flex-end; gap:.4rem; }
 
+.rdv-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.68rem 0.3rem 0.48rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.rdv-status-badge.badge-yellow {
+  border-color: rgba(217, 119, 6, 0.3);
+}
+.rdv-status-badge.badge-green {
+  border-color: rgba(5, 150, 105, 0.28);
+}
+.rdv-status-badge.badge-red {
+  border-color: rgba(220, 38, 38, 0.26);
+}
+.rdv-status-badge.badge-purple {
+  border-color: rgba(55, 48, 163, 0.26);
+}
+.rdv-status-badge__ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.rdv-status-badge__ic svg {
+  width: 1rem;
+  height: 1rem;
+}
+.rdv-status-badge__txt {
+  line-height: 1.2;
+}
+
 .rdv-actions { display:flex; gap:.35rem; }
 .btn-yes { padding:.28rem .65rem; background:var(--green-l); color:#065f46; border-radius:7px; font-size:.78rem; font-weight:600; }
 .btn-no  { padding:.28rem .65rem; background:var(--red-l);   color:#991b1b; border-radius:7px; font-size:.78rem; font-weight:600; }

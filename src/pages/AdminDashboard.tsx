@@ -1,7 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { api } from '../api/client';
 import { useAdminRealtime } from '../context/AdminRealtimeContext';
-import { IconClipboard, IconCalendarClock, IconQr } from '../components/TabIcons';
+import type { ComponentType } from 'react';
+import {
+  IconClipboard,
+  IconCalendarClock,
+  IconQr,
+  IconFilterAll,
+  IconFilterPending,
+  IconFilterConfirmed,
+  IconFilterRejected,
+  IconFilterPatientWait,
+} from '../components/TabIcons';
 import {
   WORKING_DAYS,
   WORKING_DAY_LABELS,
@@ -11,6 +21,7 @@ import {
   selectionToAvailSlots,
   formatSlotLabel,
 } from '../lib/availabilitySlots';
+import RdvDateNavigator from '../components/RdvDateNavigator';
 import './AdminDashboard.css';
 
 interface Rdv { id:string; slotStart:string; slotEnd:string; status:string; proposedSlotStart:string|null; proposedSlotEnd:string|null; client:{name:string|null;email:string|null;phone:string|null}|null; guestName:string|null; guestPhone:string|null; }
@@ -27,12 +38,36 @@ function isoDateLocal(iso: string) {
   const d = new Date(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
+
 const BADGE: Record<string,{t:string;cls:string}> = {
   PENDING:        {t:'En attente',    cls:'badge-yellow'},
   CONFIRMED:      {t:'Confirmé',      cls:'badge-green'},
   REJECTED:       {t:'Refusé',        cls:'badge-red'},
   CHANGE_PROPOSED:{t:'En attente patient', cls:'badge-purple'},
 };
+
+const RDV_FILTER_KEYS = ['ALL', 'PENDING', 'CONFIRMED', 'REJECTED', 'CHANGE_PROPOSED'] as const;
+type RdvFilterKey = (typeof RDV_FILTER_KEYS)[number];
+
+const RDV_FILTER_ICONS: Record<RdvFilterKey, ComponentType<{ className?: string }>> = {
+  ALL: IconFilterAll,
+  PENDING: IconFilterPending,
+  CONFIRMED: IconFilterConfirmed,
+  REJECTED: IconFilterRejected,
+  CHANGE_PROPOSED: IconFilterPatientWait,
+};
+
+/** Même pictos que les filtres — badge statut sur les cartes (mobile : icône seule) */
+const STATUS_BADGE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  PENDING: IconFilterPending,
+  CONFIRMED: IconFilterConfirmed,
+  REJECTED: IconFilterRejected,
+  CHANGE_PROPOSED: IconFilterPatientWait,
+};
+
+function rdvFilterLabel(f: RdvFilterKey): string {
+  return f === 'ALL' ? 'Tous' : BADGE[f]?.t ?? f;
+}
 
 const hm  = (iso:string) => new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const dmy = (iso:string) => new Date(iso).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
@@ -52,6 +87,7 @@ export default function AdminDashboard() {
   const [proposeSubmitting, setProposeSubmitting] = useState(false);
   const [proposeError, setProposeError] = useState<string | null>(null);
   const [filter,  setFilter]  = useState('ALL');
+  const [rdvListDate, setRdvListDate] = useState(() => localToday());
   const [toast,   setToast]   = useState<string | null>(null);
 
   useEffect(() => {
@@ -180,7 +216,19 @@ export default function AdminDashboard() {
   const patientName = (r:Rdv) => r.client?.name||r.guestName||'Patient';
   const patientContact = (r:Rdv) => r.client?.phone||r.guestPhone||r.client?.email||'';
 
-  const filtered = filter==='ALL' ? rdvs : rdvs.filter(r=>r.status===filter);
+  const activeRdvFilterKey = filter as RdvFilterKey;
+  const FilterSlideIcon = RDV_FILTER_ICONS[activeRdvFilterKey] ?? IconFilterAll;
+
+  const rdvsForSelectedDay = useMemo(() => {
+    const byStatus =
+      filter === 'ALL' ? rdvs : rdvs.filter((r) => r.status === filter);
+    return byStatus
+      .filter((r) => isoDateLocal(r.slotStart) === rdvListDate)
+      .sort(
+        (a, b) =>
+          new Date(a.slotStart).getTime() - new Date(b.slotStart).getTime(),
+      );
+  }, [filter, rdvs, rdvListDate]);
 
   return (
     <div className="adm">
@@ -197,79 +245,195 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="adm-tabs" role="tablist" aria-label="Sections du tableau de bord">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'rdvs'}
-          className={tab === 'rdvs' ? 'adm-tab active' : 'adm-tab'}
-          onClick={() => setTab('rdvs')}
+      <div className="adm-tabs-wrap">
+        <div className="adm-tabs" role="tablist" aria-label="Sections du tableau de bord">
+          <button
+            type="button"
+            role="tab"
+            id="adm-tab-rdvs"
+            aria-selected={tab === 'rdvs'}
+            className={tab === 'rdvs' ? 'adm-tab active' : 'adm-tab'}
+            onClick={() => setTab('rdvs')}
+            aria-label={`Réservations, ${rdvs.filter((r) => r.status === 'PENDING').length} en attente`}
+          >
+            <span className="adm-tab__ic" aria-hidden>
+              <IconClipboard />
+            </span>
+            <span className="adm-tab__label">Réservations</span>
+            <span className="adm-cnt">{rdvs.filter((r) => r.status === 'PENDING').length}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="adm-tab-avail"
+            aria-selected={tab === 'avail'}
+            className={tab === 'avail' ? 'adm-tab active' : 'adm-tab'}
+            onClick={() => setTab('avail')}
+            aria-label="Disponibilités"
+          >
+            <span className="adm-tab__ic" aria-hidden>
+              <IconCalendarClock />
+            </span>
+            <span className="adm-tab__label">Disponibilités</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="adm-tab-qr"
+            aria-selected={tab === 'qr'}
+            className={tab === 'qr' ? 'adm-tab active' : 'adm-tab'}
+            onClick={() => {
+              setTab('qr');
+              loadQr();
+            }}
+            aria-label="QR code"
+          >
+            <span className="adm-tab__ic" aria-hidden>
+              <IconQr />
+            </span>
+            <span className="adm-tab__label">QR code</span>
+          </button>
+        </div>
+        <p
+          className="adm-tab-current"
+          id="adm-tab-current"
+          aria-live="polite"
+          aria-atomic="true"
         >
-          <span className="adm-tab__ic" aria-hidden>
-            <IconClipboard />
-          </span>
-          <span className="adm-tab__label">Réservations</span>
-          <span className="adm-cnt">{rdvs.filter((r) => r.status === 'PENDING').length}</span>
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'avail'}
-          className={tab === 'avail' ? 'adm-tab active' : 'adm-tab'}
-          onClick={() => setTab('avail')}
-        >
-          <span className="adm-tab__ic" aria-hidden>
-            <IconCalendarClock />
-          </span>
-          <span className="adm-tab__label">Disponibilités</span>
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'qr'}
-          className={tab === 'qr' ? 'adm-tab active' : 'adm-tab'}
-          onClick={() => {
-            setTab('qr');
-            loadQr();
-          }}
-        >
-          <span className="adm-tab__ic" aria-hidden>
-            <IconQr />
-          </span>
-          <span className="adm-tab__label">QR code</span>
-        </button>
+          {tab === 'rdvs' && 'Réservations'}
+          {tab === 'avail' && 'Disponibilités'}
+          {tab === 'qr' && 'QR code'}
+        </p>
       </div>
 
       {/* ── RESERVATIONS ── */}
       {tab==='rdvs' && (
         <div>
-          <div className="adm-filters">
-            {['ALL','PENDING','CONFIRMED','REJECTED','CHANGE_PROPOSED'].map(f=>(
-              <button key={f} className={`f-btn${filter===f?' active':''}`} onClick={()=>setFilter(f)}>
-                {f==='ALL'?'Tous':BADGE[f]?.t||f}
-              </button>
-            ))}
+          <div
+            className="adm-rdv-date-line"
+            role="group"
+            aria-label="Date des rendez-vous affichés"
+          >
+            <span className="adm-rdv-date-line__k">Jour affiché</span>
+            <RdvDateNavigator value={rdvListDate} onChange={setRdvListDate} />
           </div>
-          {filtered.length===0
-            ? <div className="adm-empty">Aucune réservation.</div>
-            : filtered.map(r=>{
-                const b=BADGE[r.status]||{t:r.status,cls:''};
+
+          <div className="adm-filters-wrap">
+            <div
+              className="adm-filters"
+              role="group"
+              aria-label="Filtrer les réservations par statut"
+            >
+              {RDV_FILTER_KEYS.map((f) => {
+                const Icon = RDV_FILTER_ICONS[f];
+                const label = rdvFilterLabel(f);
                 return (
-                  <div key={r.id} className="adm-card">
+                  <button
+                    key={f}
+                    type="button"
+                    className={`f-btn${filter === f ? ' active' : ''}`}
+                    aria-pressed={filter === f}
+                    title={label}
+                    aria-label={label}
+                    onClick={() => setFilter(f)}
+                  >
+                    <span className="f-btn__ic" aria-hidden>
+                      <Icon />
+                    </span>
+                    <span className="f-btn__txt">{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div
+              key={filter}
+              className="adm-filter-slide"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <span className="adm-filter-slide__inner">
+                <span className="adm-filter-slide__ic" aria-hidden>
+                  <FilterSlideIcon />
+                </span>
+                <span className="adm-filter-slide__label">
+                  {rdvFilterLabel(activeRdvFilterKey)}
+                </span>
+              </span>
+            </div>
+          </div>
+          {rdvsForSelectedDay.length === 0 ? (
+            <div className="adm-empty">
+              Aucune réservation pour cette date
+              {filter !== 'ALL' ? ' avec le filtre choisi' : ''}. Essayez une autre
+              date ou un autre statut.
+            </div>
+          ) : (
+            <div className="adm-rdv-day__list" role="list">
+              {rdvsForSelectedDay.map((r) => {
+                const b = BADGE[r.status] || { t: r.status, cls: '' };
+                const StatusBadgeIcon = STATUS_BADGE_ICONS[r.status];
+                return (
+                  <div
+                    key={r.id}
+                    className={`adm-card adm-card--${r.status}`}
+                    role="listitem"
+                  >
                     <div className="adm-card-top">
-                      <div className="adm-patient">
-                        <span className="adm-pname">{patientName(r)}</span>
-                        {patientContact(r)&&<span className="adm-pcontact">{patientContact(r)}</span>}
+                      <div className="adm-card-row1">
+                        <div className="adm-patient">
+                          <span className="adm-pname">{patientName(r)}</span>
+                          {patientContact(r) && (
+                            <span className="adm-pcontact">{patientContact(r)}</span>
+                          )}
+                        </div>
+                        <div className="adm-time-wrap" aria-label="Créneau">
+                          <span className="adm-time-pill">
+                            {hm(r.slotStart)} – {hm(r.slotEnd)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="adm-time">{dmy(r.slotStart)} · {hm(r.slotStart)} – {hm(r.slotEnd)}</div>
-                      <span className={`badge ${b.cls}`}>{b.t}</span>
+                      <div className="adm-card-row2">
+                        <span
+                          className={`badge adm-card-badge ${b.cls}${StatusBadgeIcon ? '' : ' adm-card-badge--fallback'}`}
+                          title={b.t}
+                          aria-label={b.t}
+                        >
+                          {StatusBadgeIcon ? (
+                            <span className="adm-card-badge__ic" aria-hidden>
+                              <StatusBadgeIcon />
+                            </span>
+                          ) : null}
+                          <span className="adm-card-badge__txt">{b.t}</span>
+                        </span>
+                      </div>
                     </div>
 
                     {r.status==='PENDING' && (
                       <div className="adm-btns adm-btns-stack">
                         <div className="adm-btns-row">
-                          <button type="button" className="btn-accept" onClick={()=>accept(r.id)}>Accepter ce créneau</button>
-                          <button type="button" className="btn-reject" onClick={()=>reject(r.id)}>Refuser la demande</button>
+                          <button
+                            type="button"
+                            className="btn-accept"
+                            aria-label="Accepter ce créneau"
+                            onClick={() => accept(r.id)}
+                          >
+                            <span className="btn-adm-ic" aria-hidden>
+                              <IconFilterConfirmed />
+                            </span>
+                            <span className="btn-adm-txt">Accepter ce créneau</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-reject"
+                            aria-label="Refuser la demande"
+                            onClick={() => reject(r.id)}
+                          >
+                            <span className="btn-adm-ic" aria-hidden>
+                              <IconFilterRejected />
+                            </span>
+                            <span className="btn-adm-txt">Refuser la demande</span>
+                          </button>
                         </div>
                         {propose===r.id ? (
                           <div className="adm-propose-panel">
@@ -323,8 +487,16 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         ) : (
-                          <button type="button" className="btn-propose-link" onClick={() => openPropose(r)}>
-                            Proposer un autre horaire
+                          <button
+                            type="button"
+                            className="btn-propose-link"
+                            aria-label="Proposer un autre horaire"
+                            onClick={() => openPropose(r)}
+                          >
+                            <span className="btn-adm-ic" aria-hidden>
+                              <IconCalendarClock />
+                            </span>
+                            <span className="btn-adm-txt">Proposer un autre horaire</span>
                           </button>
                         )}
                       </div>
@@ -347,8 +519,9 @@ export default function AdminDashboard() {
                     )}
                   </div>
                 );
-              })
-          }
+              })}
+            </div>
+          )}
         </div>
       )}
 
