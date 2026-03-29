@@ -291,7 +291,7 @@
 }
 
 /* Connexion client : fond plein écran, pas de bandes latérales ni double padding */
-.page--account-login {
+.page.page--account-login {
   max-width: none;
   margin: 0;
   padding: 0;
@@ -372,6 +372,12 @@
     padding: 1rem;
     padding-left: max(1rem, env(safe-area-inset-left, 0));
     padding-right: max(1rem, env(safe-area-inset-right, 0));
+  }
+
+  /* Connexion /account : pas de marge page — sinon bandes grises (fond body) autour du plein écran */
+  .page.page--account-login {
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }
 
