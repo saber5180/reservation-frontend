@@ -1,0 +1,115 @@
+/**
+ * Style unifié des boutons d’action pleins (bleu marque DentaRDV).
+ * Importé après les CSS de pages pour prendre le dessus.
+ */
+
+.al-card button[type='submit'],
+.acc-card button[type='submit'],
+.otp-btn,
+.c-btn-confirm,
+.btn-save,
+.btn-dl,
+.btn-propose {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: var(--btn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  transition:
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s ease !important;
+}
+
+.al-card button[type='submit']:hover:not(:disabled),
+.acc-card button[type='submit']:hover:not(:disabled),
+.otp-btn:hover:not(:disabled),
+.c-btn-confirm:hover:not(:disabled),
+.btn-save:hover,
+.btn-dl:hover,
+.btn-propose:hover:not(:disabled) {
+  filter: brightness(1.06) !important;
+  box-shadow: var(--btn-shadow-hover), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+.al-card button[type='submit']:active:not(:disabled),
+.acc-card button[type='submit']:active:not(:disabled),
+.otp-btn:active:not(:disabled),
+.c-btn-confirm:active:not(:disabled),
+.btn-save:active,
+.btn-dl:active,
+.btn-propose:active:not(:disabled) {
+  transform: translateY(1px);
+  filter: brightness(0.98) !important;
+}
+
+.al-card button[type='submit']:disabled,
+.otp-btn:disabled,
+.c-btn-confirm:disabled,
+.btn-propose:disabled {
+  filter: none !important;
+  opacity: 0.55 !important;
+}
+
+/* Créneaux / grille sélectionnés */
+.slot-btn.sel,
+.adm-slot-chip.sel,
+.adm-avail-slot.on {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border-color: var(--primary-d) !important;
+  box-shadow: var(--btn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.slot-btn.sel span {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.slot-btn.sel:hover,
+.adm-slot-chip.sel:hover,
+.adm-avail-slot.on:hover {
+  filter: brightness(1.05);
+  color: #fff !important;
+}
+
+/* Calendrier — jour choisi */
+.cal-day.sel,
+.cal-day.today.sel {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  box-shadow: var(--btn-shadow) !important;
+}
+
+/* Filtres admin actifs */
+.f-btn.active {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border-color: var(--primary-d) !important;
+  box-shadow: var(--btn-shadow) !important;
+}
+
+/* Badge compteur dans onglet actif admin */
+.adm-tab.active .adm-cnt {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+/* Boutons contour → remplissage marque au survol */
+.c-btn-login:hover {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+.btn-propose-link:hover {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border-color: var(--primary-d) !important;
+}
+
+.bk-guest > button:hover {
+  background: var(--btn-gradient) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
